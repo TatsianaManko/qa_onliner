@@ -1,42 +1,20 @@
-import { ChainablePromiseElement } from 'webdriverio';
-
-import Page from './page';
-
-/**
- * sub page containing specific selectors and methods for a specific page
- */
-class LoginPage extends Page {
-    /**
-     * define selectors using getter methods
-     */
-    public get inputUsername () {
-        return $('#username');
+export class LoginPage{
+  browser: WebdriverIO.Browser;
+    constructor(browser: WebdriverIO.Browser) {
+        this.browser = browser;
     }
 
-    public get inputPassword () {
-        return $('#password');
-    }
+  get selectors() {
+    return {
+      form: '//*[@id="auth-container"]/div/div[2]',
+      button: '//*[@id="auth-container"]/div/div[2]/div/form/div[4]/div[1]/a'
+    };
+  }  
+  async isFormVisible() {
+    return this.browser.$(this.selectors.form).waitForDisplayed();
+  }
 
-    public get btnSubmit () {
-        return $('button[type="submit"]');
-    }
-
-    /**
-     * a method to encapsule automation code to interact with the page
-     * e.g. to login using username and password
-     */
-    public async login (username: string, password: string) {
-        await this.inputUsername.setValue(username);
-        await this.inputPassword.setValue(password);
-        await this.btnSubmit.click();
-    }
-
-    /**
-     * overwrite specific options to adapt it to page object
-     */
-    public open () {
-        return super.open('login');
-    }
+  async clickSignUpButton() {
+    return this.browser.$(this.selectors.button).click();
+  }
 }
-
-export default new LoginPage();
